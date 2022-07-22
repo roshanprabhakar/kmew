@@ -3,3 +3,16 @@
 - https://wiki.osdev.org/Main_Page
 - https://www.gnu.org/software/grub/
 - http://www.jamesmolloy.co.uk/tutorial_html/
+
+# Docker
+
+We need this package in the container: gcc-aarch64-linux-gnu
+
+Create the container:
+`docker build env -t kmew-env`
+
+Run the container:
+`docker run --rm -it -v "$(pwd)":/root/env kmew-env`
+
+Compile command:
+`aarch64-linux-gnu-[gcc/ld]`
