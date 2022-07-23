@@ -16,3 +16,6 @@ Run the container:
 
 Compile command:
 `aarch64-linux-gnu-[gcc/ld]`
+
+# TODO
+- linker not recognizing boot.S assembly labels (test with make link)

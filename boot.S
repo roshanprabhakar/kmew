@@ -14,26 +14,26 @@
 // x4 -> 32 bit kernel entry point, _start location
 
 // begin execution here after firmware boot
-start:     
+_start:     
     ldr     x5, =_start
     mov     sp, x5 // set stack before kernel code
  
 // clear bss section (size is no. 64-bit words in bss)
     ldr     x5, =__bss_start
     ldr     w6, =__bss_size
-bss_init_loop:
-		cbz     w6, kernel_entryf
+_bss_init_loop:
+		cbz     w6, _kernel_entryf
     str     xzr, [x5], #8
     sub     w6, w6, #1
-    cbnz    w6, bss_init_loopb
+    cbnz    w6, _bss_init_loopb
  
 // jump to C code, should not return
-kernel_entry:
+_kernel_entry:
 		bl      kernel_main
 
     // for failsafe, halt this core too
-    b				haltf
+    b				_haltf
 
-halt:
+_halt:
 		wfe	// nop
-		b				haltb
+		b				_haltb
