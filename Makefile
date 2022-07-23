@@ -4,12 +4,16 @@ OC = aarch64-linux-gnu-objcopy
 
 TARGET_CPU = cortex-a53
 
-boot: boot.S
-	$(AS) -mcpu=$(TARGET_CPU) -c $@.S -o $@.o
+SRC_ASM := $(shell find src/ -name *.asm)
+OBJ_ASM := $(patsubst src/%.asm, build/%.o, $(SRC_ASM))
 
-kernel: kmew_kernel.c
-	$(CC) -mcpu=$(TARGET_CPU) -c kmew_kernel.c -o kernel.o
-
-link:
-	$(CC) -T linker.ld -o kmew_os.elf -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc 
+all: $(OBJ_ASM)
+	$(CC) -T linker.ld -o kmew_os.elf -ffreestanding -O2 -nostdlib $(OBJ_ASM) -lgcc
 	$(OC) kmew_os.elf -O binary kernel.img
+
+$(OBJ_ASM): build/%.o : src/%.asm
+	mkdir -p $(dir $@) && \
+	$(AS) -mcpu=$(TARGET_CPU) -c $(patsubst build/%.o, src/%.asm, $@) -o $@
+
+clean:
+	rm -rf build

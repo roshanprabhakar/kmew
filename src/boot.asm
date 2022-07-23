@@ -1,11 +1,11 @@
 // AArch64 mode
- 
+
 // To keep this in the first portion of the binary.
 .section ".text.boot"
- 
+
 // Make _start global.
 .globl _start
-    .org 0x80000
+.org 0x80000
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
 // x1 -> 0
@@ -17,23 +17,23 @@
 _start:     
     ldr     x5, =_start
     mov     sp, x5 // set stack before kernel code
- 
-// clear bss section (size is no. 64-bit words in bss)
+
+    // clear bss section (size is no. 64-bit words in bss)
     ldr     x5, =__bss_start
     ldr     w6, =__bss_size
 _bss_init_loop:
-		cbz     w6, _kernel_entryf
+    cbz     w6, _kernel_entryf
     str     xzr, [x5], #8
     sub     w6, w6, #1
     cbnz    w6, _bss_init_loopb
- 
-// jump to C code, should not return
+
+    // jump to C code, should not return
 _kernel_entry:
-		bl      kernel_main
+    bl      kmew_kernel
 
     // for failsafe, halt this core too
-    b				_haltf
+    b _haltf
 
 _halt:
-		wfe	// nop
-		b				_haltb
+    wfe // nop
+    b _haltb
