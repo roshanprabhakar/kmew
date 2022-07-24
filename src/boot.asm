@@ -22,18 +22,18 @@ _start:
     ldr     x5, =__bss_start
     ldr     w6, =__bss_size
 _bss_init_loop:
-    cbz     w6, _kernel_entryf
+    cbz     w6, _kernel_entry
     str     xzr, [x5], #8
     sub     w6, w6, #1
-    cbnz    w6, _bss_init_loopb
+    cbnz    w6, _bss_init_loop
 
     // jump to C code, should not return
 _kernel_entry:
-    bl      kmew_kernel
+    bl      kmew_main
 
     // for failsafe, halt this core too
-    b _haltf
+    b _halt
 
 _halt:
     wfe // nop
-    b _haltb
+    b _halt
