@@ -5,7 +5,6 @@
 
 // Make _start global.
 .globl _start
-.org 0x80000
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
 // x1 -> 0
