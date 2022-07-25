@@ -16,6 +16,6 @@ int kmew_main(
 }
 #endif
 
-void kmew_main() {
+void kmew_main(uint64_t dtb_ptr32) {
 
 }

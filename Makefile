@@ -11,7 +11,7 @@ OBJ_ASM := $(patsubst src/%.asm, build/%.o, $(SRC_ASM))
 OBJ_C := $(patsubst src/%.c, build/%.o, $(SRC_C))
 
 all: $(OBJ_ASM) $(OBJ_C)
-	$(CC) -g -T linker.ld -o build/kmew_os.elf -ffreestanding -nostdlib $(OBJ_ASM) $(OBJ_C) -lgcc
+	$(CC) -g -T src/linker.ld -o build/kmew_os.elf -ffreestanding -nostdlib $(OBJ_ASM) $(OBJ_C) -lgcc
 	$(OC) build/kmew_os.elf -O binary build/kmew_os.img
 
 $(OBJ_ASM): build/%.o : src/%.asm
