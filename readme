@@ -27,3 +27,17 @@ Debug:
 qemu-system-aarch64 -s -S -machine raspi2b -cpu cortex-a53 -smp cores=4,threads=1 -m 1024 -kernel build/kmew_os.elf -serial stdio -usb -vga std
 lldb build/kmew_os.elf
 (gdb) target remote :1234
+
+on Host
+```sh
+sh run.sh
+gdbserver <-- in Qemu monitor
+```
+
+in Docker
+```sh
+gdb-multiarch build/kmew_os.elf
+target remote host.docker.internal 1234
+b *0x80000
+c
+```
