@@ -6,7 +6,12 @@ SECTIONS {
     .text :
     {
         KEEP(*(.text.boot))	
-        *(.text)
+				KEEP(*(.text.vector_table_setup))
+
+        *(.text) /* Contains kernel */
+
+				. = ALIGN(0x800); /* Align req for vector table */
+				KEEP(*(.text.vector_tables))
     }
     . = ALIGN(4096); /* PI page size */
 
