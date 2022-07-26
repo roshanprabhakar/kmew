@@ -1,17 +1,19 @@
-
 ENTRY(_start)
 
+__kernel_start = 0x80000;
+
 SECTIONS {
-    . = 0x80000;
+    . = __kernel_start;
     .text :
     {
         KEEP(*(.text.boot))	
-				KEEP(*(.text.vector_table_setup))
-
-        *(.text) /* Contains kernel */
+				KEEP(*(.text.system_init_proxys))
+				KEEP(*(.text.reg_init))
 
 				. = ALIGN(0x800); /* Align req for vector table */
 				KEEP(*(.text.vector_tables))
+
+        *(.text) /* Contains kernel */
     }
     . = ALIGN(4096); /* PI page size */
 
@@ -38,5 +40,8 @@ SECTIONS {
 
     __bss_size = __bss_end - __bss_start;
     __end = .;
+
+		__cpu_stack_top = __kernel_start;
+		__cpu_stack_size = __kernel_start;
 }
 

@@ -5,6 +5,7 @@
 
 // Make _start global.
 .global _start
+
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
 // x1 -> 0
@@ -29,6 +30,7 @@ _bss_init_loop:
     // jump to C code, should not return
 _kernel_entry:
 		bl			_vector_table_setup
+		bl			_reg_init
     bl      kmew_main
 
     // for failsafe, halt this core too
