@@ -36,12 +36,10 @@ _bss_init_loop:
 
 _kernel_entry:
     // What is current exception level
-    // msr     x0, CurrentEL
-    // lsr     x0, x0, 2
-
     // What EL level are we in?
     bl      _vector_table_setup
-    bl      _reg_init
+    // bl      _reg_init     // Is this necessary?
+
     bl      kmew_main
 
     // for failsafe, halt this core too

@@ -17,5 +17,3 @@ _reg_init:
     bl _sp_init
     bl _sys_ctrl_reg_init
     ret
-
-_switch_to_el0:

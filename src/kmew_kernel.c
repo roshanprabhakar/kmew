@@ -15,9 +15,13 @@ const uint32_t __stack_chk_guard	= 0xBADBADFF;
 const uint32_t __stack_chk_fail		= 0xFFBADBAD;
 #endif
 
+extern uint64_t _get_el();
+
 int kmew_main() {
   int32_t x;
   *(&x) = 55;
 
-  return 0;
+	uint64_t el = _get_el();
+
+  return (int)el;
 }

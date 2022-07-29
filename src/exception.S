@@ -3,6 +3,7 @@
 
 /*** Exception Handlers for EL 1  ***/
 .global _vector_table_el1
+.global _get_el
 
 // assumes proper alignment by linker
 _vector_table_el1:
@@ -44,3 +45,8 @@ _vector_table_el1:
     b low_el_aarch32_FIQ
     .balign 0x80
     b low_el_aarch32_SError
+
+_get_el:
+		mrs x0, CurrentEL
+		lsr x0, x0, #2
+		ret
