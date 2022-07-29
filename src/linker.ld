@@ -6,12 +6,12 @@ SECTIONS {
     . = __kernel_start;
     .text :
     {
-        KEEP(*(.text.boot))	
-				KEEP(*(.text.system_init_proxys))
-				KEEP(*(.text.reg_init))
+        KEEP(*(.text.boot))
+        KEEP(*(.text.system_init_proxys))
+        KEEP(*(.text.reg_init))
 
-				. = ALIGN(0x800); /* Align req for vector table */
-				KEEP(*(.text.vector_tables))
+        . = ALIGN(0x800); /* Align req for vector table */
+        KEEP(*(.text.vector_tables))
 
         *(.text) /* Contains kernel */
     }
@@ -41,7 +41,7 @@ SECTIONS {
     __bss_size = __bss_end - __bss_start;
     __end = .;
 
-		__cpu_stack_top = __kernel_start;
-		__cpu_stack_size = __kernel_start;
+    __cpu_stack_top = __kernel_start;
+    __cpu_stack_size = __kernel_start;
 }
 

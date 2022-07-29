@@ -14,7 +14,14 @@
 // x4 -> 32 bit kernel entry point, _start location
 
 // begin execution here after firmware boot
-_start:     
+_start:
+    // Hang other threads
+    mrs     x0, mpidr_el1
+    and     x0, x0, #0xFF
+    cbz     x0, _entry
+    b       _halt
+
+_entry:
     ldr     x5, =_start
     mov     sp, x5 // set stack before kernel code
 
@@ -27,10 +34,14 @@ _bss_init_loop:
     sub     w6, w6, #1
     cbnz    w6, _bss_init_loop
 
-    // jump to C code, should not return
 _kernel_entry:
-		bl			_vector_table_setup
-		bl			_reg_init
+    // What is current exception level
+    // msr     x0, CurrentEL
+    // lsr     x0, x0, 2
+
+    // What EL level are we in?
+    bl      _vector_table_setup
+    bl      _reg_init
     bl      kmew_main
 
     // for failsafe, halt this core too
