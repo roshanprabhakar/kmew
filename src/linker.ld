@@ -9,6 +9,7 @@ SECTIONS {
         KEEP(*(.text.boot))	
 				KEEP(*(.text.system_init_proxys))
 				KEEP(*(.text.reg_init))
+				KEEP(*(.text.mmu_config))
 
 				. = ALIGN(0x800); /* Align req for vector table */
 				KEEP(*(.text.vector_tables))

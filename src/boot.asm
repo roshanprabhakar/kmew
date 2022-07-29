@@ -31,6 +31,7 @@ _bss_init_loop:
 _kernel_entry:
 		bl			_vector_table_setup
 		bl			_reg_init
+		bl			_enable_mmu
     bl      kmew_main
 
     // for failsafe, halt this core too
