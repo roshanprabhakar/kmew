@@ -12,7 +12,7 @@ SRC_C := $(shell find src/ -name *.c)
 OBJ_ASM := $(patsubst src/%.S, build/%.o, $(SRC_ASM))
 OBJ_C := $(patsubst src/%.c, build/%.o, $(SRC_C))
 
-OPS_C := -Wall -nostdlib -nostartfiles -ffreestanding -mgeneral-regs-only -fno-stack-protector -mcpu=$(TARGET_CPU) -g
+OPS_C := -Wall -nostdlib -nostartfiles -ffreestanding -DPRINTF_DISABLE_SUPPORT_FLOAT -mgeneral-regs-only -fno-stack-protector -mcpu=$(TARGET_CPU) -g
 OPS_ASM := -mcpu=$(TARGET_CPU) -g
 
 all: $(OBJ_ASM) $(OBJ_C)

@@ -1,23 +1,18 @@
+void kmew_main() __attribute__((section(".text.kernel")));
+
 #include <stdint.h>
+#include "printf.h"
 
-/* first 32 bits of dtb_ptr32 points to an object described here:
- * https://elinux.org/Device_Tree_Reference#Introduction
- *
- * helpful:
- * https://unix.stackexchange.com/questions/118683/what-is-a-device-tree-and-a-device-tree-blob
- */
-#if 0
-int kmew_main(uint64_t dtb_ptr32, uint64_t x1, uint64_t x2, uint64_t x3) {
-  return 0;
-}
+void kmew_main() {
+	
+	bare_metal_miniUART_setup();
+	printf("hello %d world\n", 5);
 
-const uint32_t __stack_chk_guard	= 0xBADBADFF;
-const uint32_t __stack_chk_fail		= 0xFFBADBAD;
-#endif
-
-int kmew_main() {
-  int32_t x;
-  *(&x) = 55;
-
-  return 0;
+	/*
+	while (1) {
+		// busy wait until uart status reg asserts 1 byte available
+		if ((*(uint32_t*) AUX_MU_LSR_REG) & 0x01) break;
+	}
+	char data = (*(uint32_t*) AUX_MU_IO_REG) & 0xFF;
+	*/
 }

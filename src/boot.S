@@ -5,6 +5,7 @@
 
 // Make _start global.
 .global _start
+.global _delay
 
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
@@ -40,8 +41,8 @@ _kernel_entry:
     // lsr     x0, x0, 2
 
     // What EL level are we in?
-    bl      _vector_table_setup
-    bl      _reg_init
+    // bl      _vector_table_setup
+    // bl      _reg_init
     bl      kmew_main
 
     // for failsafe, halt this core too
@@ -49,4 +50,9 @@ _kernel_entry:
 
 _halt:
     wfe // nop
+
+_delay:
+		subs	x0, x0, #1
+		bne		_delay
+		ret
     b _halt
