@@ -7,6 +7,8 @@
 - http://www.jamesmolloy.co.uk/tutorial_html/
 - [.elf special sections explanations](https://refspecs.linuxbase.org/LSB_3.0.0/LSB-PDA/LSB-PDA/specialsections.html)
 
+- [printf library here](https://github.com/mpaland/printf)
+
 ## Docker
 
 We need this package in the container: gcc-aarch64-linux-gnu
