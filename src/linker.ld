@@ -40,8 +40,9 @@ SECTIONS {
     }
     . = ALIGN(4096);
     __bss_end = .;
-
     __bss_size = __bss_end - __bss_start;
+
+		__kernel_boundary_end = .;
     __end = .;
 
     __cpu_stack_top = __kernel_start;

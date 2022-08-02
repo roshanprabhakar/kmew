@@ -9,7 +9,8 @@
 /** UNRELIABLE **/
 void bare_metal_miniUART_setup();
 
-// printf internal function
 void _putchar(char c);
+void _getchar(char* c); // load *c with serial input
+void _delchar();
 
 #endif /* __SERIAL_IO */
