@@ -1,14 +1,19 @@
-void kmew_main() __attribute__((section(".text.kernel")));
-
 #include <stdint.h>
 #include "printf.h"
 #include "serial_io.h"
+#include "cli.h"
 
 extern char* __kernel_boundary_end[];
 
+void kmew_main() __attribute__((section(".text.kernel_main")));
 void kmew_main() {
 	
 	bare_metal_miniUART_setup();
+
+	struct cli command_line; // first instance cannibalizes serial io
+	cli_start(&command_line); // initialize session
+
+	return;
 
 	/** 
 	 * COMMAND LINE INTERFACE
@@ -17,6 +22,7 @@ void kmew_main() {
 	 * 3. on newline process data, reset wp
 	 */
 
+	/*
 	char* cmd_start = __kernel_boundary_end;
 
 	int wp = 0; // write pointer
@@ -41,4 +47,5 @@ void kmew_main() {
 			wp++;
 		}
 	}
+	*/
 }
