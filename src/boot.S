@@ -1,3 +1,7 @@
+/* 	Machine entry point. 
+		boot starts at _start.
+ */
+
 // AArch64 mode
 
 // To keep this in the first portion of the binary.

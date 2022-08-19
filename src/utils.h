@@ -1,3 +1,7 @@
+/**
+ * Alternate implementations of libc functions included here.
+ */
+
 #ifndef __STANDALONE_LIBC_UTILS
 #define __STANDALONE_LIBC_UTILS
 

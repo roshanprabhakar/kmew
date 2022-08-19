@@ -2,8 +2,10 @@
 #include "printf.h"
 #include "cli.h"
 
+/* ENTER (ascii 13) is not the same as '\n' (ascii 10).
+ * Enter does something weird.
+ */
 void case_enter(struct cli* c) {
-	// _putchar((char) 10); // ENTER is not the same as '\n'
 	c->data_start[c->cur.x] = 0;
 	c->cur.x = 0;
 	c->cmd_end.x = 0;
@@ -23,13 +25,12 @@ void case_newchar(struct cli* c, char t) {
 	c->cur.x++;
 }
 
-void cli_start(struct cli* c) {
+void cli_start(register struct cli* c, char* kernel_boundary) {
 	memset(c, 0, sizeof(c));
-	c->data_start = (char*) CMD_POS;
+	c->data_start = kernel_boundary;
 
 	_putchar('$'); _putchar(' ');
 
-	// register char* cur_in;
 	char t;
 	for (;;) {
 		_getchar(&t);
