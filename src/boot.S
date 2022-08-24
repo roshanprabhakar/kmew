@@ -2,6 +2,8 @@
 		boot starts at _start.
  */
 
+#include "regs.h"
+
 // AArch64 mode
 
 // To keep this in the first portion of the binary.
@@ -10,6 +12,8 @@
 // Make _start global.
 .global _start
 .global _delay
+.global _get_exception_level
+.global _switch_to_el1
 
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
@@ -23,7 +27,7 @@ _start:
     // Hang other threads
     mrs     x0, mpidr_el1
     and     x0, x0, #0xFF
-    cbz     x0, _entry
+    cbz     x0, _switch_to_el1
     b       _halt
 
 _entry:
@@ -60,3 +64,43 @@ _delay:
 		bne		_delay
 		ret
     b _halt
+
+_get_exception_level:
+    mrs x0, CurrentEL
+    lsr x0, x0, #2
+    ret
+
+_switch_to_el1:
+    // Configure processor when running in EL1
+    ldr x0, =SCTLR_MMU_DISABLED
+    msr sctlr_el1, x0
+
+    mrs x0, CurrentEL
+    lsr x0, x0, #2
+
+    // Check that we are in EL2, if yes, only initialize EL2
+    cmp x0, 3
+    bne init_el2
+
+    // Configure EL3 (but we start on EL2 so how does this work??)
+    ldr x0, =SCR_VALUE
+    msr scr_el3, x0
+
+    ldr x0, =SPSR_VALUE
+    msr spsr_el3, x0
+
+    adr x0, _entry
+    msr elr_el3, x0
+
+init_el2:
+    // Configure EL2
+    ldr x0, =HCR_VALUE
+    msr hcr_el2, x0
+
+    ldr x0, =SPSR_VALUE
+    msr spsr_el2, x0
+
+    adr x0, _entry
+    msr elr_el2, x0
+
+    eret
