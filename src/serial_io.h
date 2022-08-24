@@ -17,15 +17,11 @@
  */
 void bare_metal_miniUART_setup();
 
-void _putchar(char c);
-void _getchar(char* c); // load *c with serial input
-
-/**
- * Shorthand for the proper delete sequence.
- */
-void _delchar();
+void putchar(char c);
+void delchar();
+void getchar(char* c); // load *c with serial input
 
 /* Delay with simple loop (defined in boot.S) */
-void _delay(uint64_t cycles);
+void delay(uint64_t cycles);
 
 #endif /* __SERIAL_IO */

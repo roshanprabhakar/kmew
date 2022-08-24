@@ -11,9 +11,8 @@
 
 // Make _start global.
 .global _start
-.global _delay
-.global _get_exception_level
-.global _switch_to_el1
+.global delay
+.global get_exception_level
 
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
@@ -59,13 +58,13 @@ _kernel_entry:
 _halt:
     wfe // nop
 
-_delay:
+delay:
     subs	x0, x0, #1
-    bne		_delay
+    bne		delay
     ret
     b _halt
 
-_get_exception_level:
+get_exception_level:
     mrs x0, CurrentEL
     lsr x0, x0, #2
     ret

@@ -12,11 +12,11 @@ void bare_metal_miniUART_setup() {
 
   // disable pull up/down for all gpio pins
   *(uint32_t*) GPPUD = 0;
-  _delay(150);
+  delay(150);
 
   // disable pull up/down for pins 14,15
   *(uint32_t*) GPPUDCLK0 = (1 << 14) | (1 << 15);
-  _delay(150);
+  delay(150);
 
   // required to take effect
   // *(uint32_t*) GPPUD = 0;
@@ -48,13 +48,17 @@ void _putchar(char c) {
   *(uint32_t*) AUX_MU_IO_REG = c;
 }
 
-void _getchar(char* c) {
+void putchar(char c) {
+  _putchar(c);
+}
+
+void getchar(char* c) {
   for (;;) { if ((*(uint32_t*) AUX_MU_LSR_REG) & 0x01) break; }
   *c = (char) ((*(uint32_t*) AUX_MU_IO_REG ) & 0xFF);
 }
 
-void _delchar() {
-  _putchar('\b'); 
-  _putchar((char) 127);
-  _putchar('\b');
+void delchar() {
+  putchar('\b'); 
+  putchar((char) 127);
+  putchar('\b');
 }
