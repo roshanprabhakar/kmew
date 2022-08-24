@@ -60,9 +60,9 @@ _halt:
     wfe // nop
 
 _delay:
-		subs	x0, x0, #1
-		bne		_delay
-		ret
+    subs	x0, x0, #1
+    bne		_delay
+    ret
     b _halt
 
 _get_exception_level:

@@ -17,9 +17,9 @@ struct cli_pos { uint32_t x; }; // byte offset from console start
  * emulated terminal. Only one struct cli should be used per emulator.
  */
 struct cli {
-	struct cli_pos cur;				// current cursor position
-	struct cli_pos cmd_end; 	// end of explorable field (explorable with <,>)
-	char* data_start;					// command stored here
+  struct cli_pos cur;				// current cursor position
+  struct cli_pos cmd_end; 	// end of explorable field (explorable with <,>)
+  char* data_start;					// command stored here
 };
 
 void cli_start(struct cli*, char*) __attribute__((section(".text.serial_cli")));
