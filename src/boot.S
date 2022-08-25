@@ -11,6 +11,7 @@
 
 // Make _start global.
 .global _start
+.global _halt
 .global delay
 .global get_exception_level
 

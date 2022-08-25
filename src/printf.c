@@ -1,5 +1,3 @@
-void kmew_main() __attribute__((section(".text.printf")));
-
 ///////////////////////////////////////////////////////////////////////////////
 // \author (c) Marco Paland (info@paland.com)
 //             2014-2019, PALANDesign Hannover, Germany

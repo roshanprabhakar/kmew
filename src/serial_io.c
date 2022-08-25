@@ -1,5 +1,3 @@
-void kmew_main() __attribute__((section(".text.serialio")));
-
 #include "serial_io.h"
 
 /**

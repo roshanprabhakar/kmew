@@ -12,20 +12,14 @@
 
 extern uint64_t __kernel_boundary_end;
 
-void el1_entry() {
-  printf("In the el1_entry function\n");
-
-  printf("AFTER: Current exception level is: %d\n", get_exception_level());
-}
-
-void kmew_main() __attribute__((section(".text.kernel_main")));
+/* This function runs in exception level 1 */
 void kmew_main() {
 
   // bare_metal_miniUART_setup();										// use this if deploying to bare metal
 
   printf("Current exception level is: %d\n", get_exception_level());
 
-#if 0
+#if 1
   struct cli command_line; 													// first instance cannibalizes serial io
   cli_start(&command_line, (char *)&__kernel_boundary_end); 	// initialize session
 #endif

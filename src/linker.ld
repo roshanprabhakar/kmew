@@ -7,10 +7,10 @@ SECTIONS {
   .text :
   {
     KEEP(*(.text.boot))
-    KEEP(*(.text.kernel_main))
-    KEEP(*(.text.printf))
-    KEEP(*(.text.serial_cli))
-    KEEP(*(.text.kmew_libc))
+    /* KEEP(*(.text.kernel_main)) */
+    /* KEEP(*(.text.printf)) */
+    /* KEEP(*(.text.serial_cli)) */
+    /* KEEP(*(.text.kmew_libc)) */
 
     /* KEEP(*(.text.system_init_proxys)) */
     /* KEEP(*(.text.reg_init)) */

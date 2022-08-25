@@ -22,7 +22,6 @@ struct cli {
   char* data_start;					// command stored here
 };
 
-void cli_start(struct cli*, char*) __attribute__((section(".text.serial_cli")));
 void cli_start(struct cli*, char*);
 
 #endif /* _CLI */
