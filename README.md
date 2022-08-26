@@ -6,16 +6,21 @@
 - [GrUB](https://www.gnu.org/software/grub/)
 - http://www.jamesmolloy.co.uk/tutorial_html/
 - [.elf special sections explanations](https://refspecs.linuxbase.org/LSB_3.0.0/LSB-PDA/LSB-PDA/specialsections.html)
+- [printf library here](https://github.com/mpaland/printf)
 
 ## Docker
 
-We need this package in the container: gcc-aarch64-linux-gnu
+We need this package in the container: `gcc-aarch64-linux-gnu` <br>
 
-Create the container:
-`docker build env -t kmew-env`
+Create the container <br>
+```sh
+docker build env -t kmew-env
+```
 
-Run the container:
-`docker run --rm -it -v "$(pwd)":/root/env kmew-env`
+Run the container <br>
+```sh
+docker run --rm -it -v "$(pwd)":/root/env kmew-env
+```
 
 Compile command:
 `aarch64-linux-gnu-[gcc/ld]`
