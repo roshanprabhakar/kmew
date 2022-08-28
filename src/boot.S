@@ -9,9 +9,9 @@
 // To keep this in the first portion of the binary.
 .section ".text.boot"
 
-// Make _start global.
-.global _start
-.global _halt
+// Make start global.
+.global start
+.global halt
 .global delay
 .global get_exception_level
 
@@ -23,47 +23,49 @@
 // x4 -> 32 bit kernel entry point, _start location
 
 // begin execution here after firmware boot
-_start:
+start:
     // Hang other threads
     mrs     x0, mpidr_el1
     and     x0, x0, #0xFF
-    cbz     x0, _switch_to_el1
-    b       _halt
+    cbz     x0, switch_to_el1
+    b       halt
 
-_entry:
-    ldr     x5, =_start
+entry:
+    ldr     x5, =start
     mov     sp, x5 // set stack before kernel code
 
     // clear bss section (size is no. 64-bit words in bss)
     ldr     x5, =__bss_start
     ldr     w6, =__bss_size
-_bss_init_loop:
-    cbz     w6, _kernel_entry
+bss_init_loop:
+    cbz     w6, kernel_entry
     str     xzr, [x5], #8
     sub     w6, w6, #1
-    cbnz    w6, _bss_init_loop
+    cbnz    w6, bss_init_loop
 
-_kernel_entry:
+kernel_entry:
+    // bl      _vector_table_setup
+    // bl      _reg_init     // Is this necessary?
+
     bl      kmew_main
-
     // for failsafe, halt this core too
-    b _halt
+    b halt
 
-_halt:
+halt:
     wfe // nop
 
 delay:
     subs	x0, x0, #1
     bne		delay
     ret
-    b _halt
+    b halt
 
 get_exception_level:
     mrs x0, CurrentEL
     lsr x0, x0, #2
     ret
 
-_switch_to_el1:
+switch_to_el1:
     // Configure processor when running in EL1
     ldr x0, =SCTLR_MMU_DISABLED
     msr sctlr_el1, x0
@@ -82,7 +84,7 @@ _switch_to_el1:
     ldr x0, =SPSR_VALUE
     msr spsr_el3, x0
 
-    adr x0, _entry
+    adr x0, entry
     msr elr_el3, x0
 
 init_el2:
@@ -93,7 +95,7 @@ init_el2:
     ldr x0, =SPSR_VALUE
     msr spsr_el2, x0
 
-    adr x0, _entry
+    adr x0, entry
     msr elr_el2, x0
 
     eret

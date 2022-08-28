@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "utils.h"
 
 void* memset(void* data, int c, uint32_t len) {

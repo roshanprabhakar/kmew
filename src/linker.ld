@@ -1,4 +1,4 @@
-ENTRY(_start)
+ENTRY(start)
 
 __kernel_start = 0x80000;
 

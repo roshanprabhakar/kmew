@@ -25,7 +25,7 @@ const char *entry_error_messages[] = {
 };
 
 void enable_interrupt_controller() {
-  *(uint32_t *)ENABLE_IRQS_1 = SYSTEM_TIMER_IRQ_1;
+  *(uint32_t *) ENABLE_IRQS_1 = SYSTEM_TIMER_IRQ_1;
 }
 
 void show_invalid_entry_message(
@@ -40,7 +40,7 @@ void show_invalid_entry_message(
 }
 
 void handle_irq(void) {
-	unsigned int irq = *(uint32_t *)IRQ_PENDING_1;
+	uint32_t irq = *(uint32_t *)IRQ_PENDING_1;
 
 	switch (irq) {
 		case (SYSTEM_TIMER_IRQ_1):

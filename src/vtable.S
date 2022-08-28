@@ -1,4 +1,5 @@
 #include "vtable.h"
+#include "irq.h"
 
 .section ".text"
 
@@ -103,6 +104,12 @@ ventry sync_invalid_el0_32      // Synchronous 32-bit EL0
 ventry irq_invalid_el0_32       // IRQ 32-bit EL0
 ventry fiq_invalid_el0_32       // FIQ 32-bit EL0
 ventry error_invalid_el0_32     // Error 32-bit EL0
+
+el1_irq:
+		kernel_entry
+		bl	handle_irq
+		kernel_exit
+		ret
 
 /*
  * There are 4 exception types: Synchronous, IRQ, FIQ, SError
