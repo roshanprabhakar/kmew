@@ -1,4 +1,4 @@
-#include "irq.h"
+#include "interrupt_handlers.h"
 #include "printf.h"
 #include <stdint.h>
 
@@ -44,7 +44,7 @@ void handle_irq(void) {
 
 	switch (irq) {
 		case (SYSTEM_TIMER_IRQ_1):
-			handle_timer_irq();
+			/* handle_timer_irq(); */ printf("timer interrupt received\n");
 			break;
 
 		default:

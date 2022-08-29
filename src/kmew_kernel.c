@@ -5,24 +5,30 @@
  */
 
 #include <stdint.h>
-#include "irq.h"
+#include "interrupt_handlers.h"
 #include "printf.h"
 #include "serial_io.h"
 #include "cli.h"
-#include "boot.h"
 #include "vtable.h"
+#include "timer.h"
 
 extern uint64_t __kernel_boundary_end;
 
 /* This function runs in exception level 1 */
 void kmew_main() {
-
-	init_irq_vector();
-	enable_interrupt_controller();
-
   printf("Current exception level is: %d\n", get_exception_level());
 
-#if 1
+	
+	
+	/*
+	init_vector_table();
+	timer_init();
+	enable_interrupt_controller();
+	enable_irq();
+	*/
+
+
+#if 0
   struct cli command_line; 													// first instance cannibalizes serial io
   cli_start(&command_line, (char *)&__kernel_boundary_end); 	// initialize session
 #endif

@@ -1,5 +1,5 @@
 /* 	Machine entry point. 
-		boot starts at _start.
+		boot starts at start.
  */
 
 #include "regs.h"
@@ -27,12 +27,14 @@ start:
     // Hang other threads
     mrs     x0, mpidr_el1
     and     x0, x0, #0xFF
-    cbz     x0, switch_to_el1
+    cbz     x0, entry
     b       halt
 
 entry:
     ldr     x5, =start
     mov     sp, x5 // set stack before kernel code
+
+		// bl switch_to_el1
 
     // clear bss section (size is no. 64-bit words in bss)
     ldr     x5, =__bss_start
@@ -44,9 +46,6 @@ bss_init_loop:
     cbnz    w6, bss_init_loop
 
 kernel_entry:
-    // bl      _vector_table_setup
-    // bl      _reg_init     // Is this necessary?
-
     bl      kmew_main
     // for failsafe, halt this core too
     b halt
@@ -86,6 +85,7 @@ switch_to_el1:
 
     adr x0, entry
     msr elr_el3, x0
+		ret
 
 init_el2:
     // Configure EL2

@@ -1,14 +1,14 @@
 #include "vtable.h"
-// #include "interrupt_handlers.h"
+#include "irq.h"
 
 .section ".text"
 
-.global init_vector_table
+.global init_irq_vector
 .global enable_irq
 .global disable_irq
 .global vectors
 
-init_vector_table:
+init_irq_vector:
   adr x0, vectors
   msr vbar_el1, x0
   ret
@@ -39,7 +39,7 @@ mov x0, #\type                      // Exception type
 mrs x1, esr_el1                     // Exception description (what caused it?)
 mrs x2, elr_el1                     // Address of the instruction that caused the exception
 bl show_invalid_entry_message
-b halt
+b _halt
 .endm
 
 .macro kernel_entry
@@ -133,16 +133,10 @@ handle_invalid_entry  ERROR_INVALID_EL1t
 sync_invalid_el1h:
 handle_invalid_entry  SYNC_INVALID_EL1h
 
-/* We have a handler for this.
+/*
 irq_invalid_el1h:
 handle_invalid_entry  IRQ_INVALID_EL1h
 */
-el1_irq:
-		kernel_entry
-		bl	handle_irq
-		kernel_exit
-		ret
-
 
 fiq_invalid_el1h:
 handle_invalid_entry  FIQ_INVALID_EL1h
