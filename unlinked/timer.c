@@ -1,7 +1,7 @@
 #include <stdint.h>
 
-#include "peripherals/timer.h"
 #include "printf.h"
+#include "timer.h"
 
 const unsigned int interval = 200000;
 unsigned int cur = 0;

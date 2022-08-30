@@ -1,25 +1,11 @@
 #include "vtable.h"
-// #include "interrupt_handlers.h"
 
 .section ".text"
 
-.global init_vector_table
+.global init_el1_vector_table
 .global enable_irq
 .global disable_irq
 .global vectors
-
-init_vector_table:
-  adr x0, vectors
-  msr vbar_el1, x0
-  ret
-
-enable_irq:
-  msr daifclr, #2
-  ret
-
-disable_irq:
-  msr daifset, #2
-  ret
 
 /* 
  * We need to pass 7 to the align directive because that is the amount
@@ -83,6 +69,14 @@ add	sp, sp, #S_FRAME_SIZE
 eret
 .endm
 
+/*
+ * There are 4 exception types: Synchronous, IRQ, FIQ, SError
+ * For each, we need to define 4 handlers:
+ * - When in EL1 but using the shared spel0 stack pointer register (SPSel == 0)
+ * - When in EL1 but not using the shared spel0 stack pointer register (SPSel == 1)
+ * - When in EL0 64 bit
+ * - When in EL0 32 bit
+ */
 .align 11
 vectors:
 ventry sync_invalid_el1t        // Synchronous EL1t
@@ -91,7 +85,7 @@ ventry fiq_invalid_el1t         // FIQ EL1t
 ventry error_invalid_el1t       // Error EL1t
 
 ventry sync_invalid_el1h        // Synchronous EL1h
-ventry el1_irq                  // IRQ EL1h
+ventry el1_irq					        // IRQ EL1h
 ventry fiq_invalid_el1h         // FIQ EL1h
 ventry error_invalid_el1h       // Error EL1h
 
@@ -105,14 +99,7 @@ ventry irq_invalid_el0_32       // IRQ 32-bit EL0
 ventry fiq_invalid_el0_32       // FIQ 32-bit EL0
 ventry error_invalid_el0_32     // Error 32-bit EL0
 
-/*
- * There are 4 exception types: Synchronous, IRQ, FIQ, SError
- * For each, we need to define 4 handlers:
- * - When in EL1 but using the shared spel0 stack pointer register (SPSel == 0)
- * - When in EL1 but not using the shared spel0 stack pointer register (SPSel == 1)
- * - When in EL0 64 bit
- * - When in EL0 32 bit
- */
+
 
 // If stack pointer is shared (EL0 and EL1 - just using spel0)
 sync_invalid_el1t:
@@ -133,16 +120,13 @@ handle_invalid_entry  ERROR_INVALID_EL1t
 sync_invalid_el1h:
 handle_invalid_entry  SYNC_INVALID_EL1h
 
-/* We have a handler for this.
 irq_invalid_el1h:
-handle_invalid_entry  IRQ_INVALID_EL1h
-*/
+// handle_invalid_entry  IRQ_INVALID_EL1h
 el1_irq:
 		kernel_entry
 		bl	handle_irq
 		kernel_exit
 		ret
-
 
 fiq_invalid_el1h:
 handle_invalid_entry  FIQ_INVALID_EL1h
@@ -177,3 +161,18 @@ handle_invalid_entry  FIQ_INVALID_EL0_32
 
 error_invalid_el0_32:
 handle_invalid_entry  ERROR_INVALID_EL0_32
+
+
+init_el1_vector_table:
+  adr x0, vectors
+  msr vbar_el1, x0
+  ret
+
+enable_irq:
+  msr daifclr, #2
+  ret
+
+disable_irq:
+  msr daifset, #2
+  ret
+

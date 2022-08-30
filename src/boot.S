@@ -14,6 +14,7 @@
 .global halt
 .global delay
 .global get_exception_level
+.global switch_to_el1
 
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
