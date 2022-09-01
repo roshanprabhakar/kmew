@@ -77,7 +77,7 @@ eret
  * - When in EL0 64 bit
  * - When in EL0 32 bit
  */
-.align 11
+.align 11 /* use .balign for aligning by num bytes. */
 vectors:
 ventry sync_invalid_el1t        // Synchronous EL1t
 ventry irq_invalid_el1t         // IRQ EL1t

@@ -31,3 +31,5 @@ $(OBJ_C): build/%.o : src/%.c
 clean:
 	rm -rf build
 
+dump:
+	objdump -d build/kmew_os.elf

@@ -2,7 +2,7 @@
 		boot starts at start.
  */
 
-#include "regs.h"
+// #include "boot.h"
 
 // AArch64 mode
 
@@ -13,8 +13,11 @@
 .global start
 .global halt
 .global delay
-.global get_exception_level
+
 .global switch_to_el1
+.global get_el
+.global get_daif
+.global get_nzcv
 
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
@@ -60,43 +63,79 @@ delay:
     ret
     b halt
 
-get_exception_level:
-    mrs x0, CurrentEL
-    lsr x0, x0, #2
-    ret
 
-switch_to_el1:
-    // Configure processor when running in EL1
-    ldr x0, =SCTLR_MMU_DISABLED
-    msr sctlr_el1, x0
+/*
+// https://developer.arm.com/documentation/ddi0595/2021-06/AArch64-Registers/SPSR-EL1--Saved-Program-Status-Register--EL1-
+uint32_t get_reset_spsr_el1() {
+	uint32_t r = 0;
 
-    mrs x0, CurrentEL
-    lsr x0, x0, #2
-
-    // Check that we are in EL2, if yes, only initialize EL2
-    cmp x0, 3
-    bne init_el2
-
-    // Configure EL3 (but we start on EL2 so how does this work??)
-    ldr x0, =SCR_VALUE
-    msr scr_el3, x0
-
-    ldr x0, =SPSR_VALUE
-    msr spsr_el3, x0
-
-    adr x0, entry
-    msr elr_el3, x0
+	uint64_t el = get_el() ^ 0b1100;
+	r |= (uint32_t) (el & SPSR_EL); 					// 3-0 = CurrentEL
+																						// 4 = 0
+																						// 5 = ?
+	r |= (uint32_t) (get_daif() & SPSR_DAIF);	// 9-6 = daif
+																						// 19-10 ?
+																						// 20 = 0
+																						// 21 = 0
+																						// 27-22 = 0
+	r |= (uint32_t) (get_nzcv() & SPSR_NZCV); // 31-28 = nzcv
+	return r;
+}
+*/
+get_reset_spsr_el1:
+		stp	x29, x30, [sp, #-32]!
+		mov	x29, sp
+		str	wzr, [sp, #28]
+		bl	get_el
+		eor	x0, x0, #0xc
+		str	x0, [sp, #16]
+		ldr	x0, [sp, #16]
+		and	w0, w0, #0xf
+		ldr	w1, [sp, #28]
+		orr	w0, w1, w0
+		str	w0, [sp, #28]
+		bl	get_daif
+		and	w0, w0, #0x3c0
+		ldr	w1, [sp, #28]
+		orr	w0, w1, w0
+		str	w0, [sp, #28]
+		bl	get_nzcv
+		and	w0, w0, #0xf0000000
+		ldr	w1, [sp, #28]
+		orr	w0, w1, w0
+		str	w0, [sp, #28]
+		ldr	w0, [sp, #28]
+		ldp	x29, x30, [sp], #32
 		ret
 
-init_el2:
-    // Configure EL2
-    ldr x0, =HCR_VALUE
-    msr hcr_el2, x0
+switch_to_el1:
+		// store x0, x1 on stack
+		sub sp, sp, #16
+		stp x0, x1, [sp]
+		
+		// move return address from lr into elr_(curEl)
+		mrs x30, elr_el2
+		
+		// get fake spsr, move it into spsr_el2
+		bl get_reset_spsr_el1
+		msr spsr_el2, x0
 
-    ldr x0, =SPSR_VALUE
-    msr spsr_el2, x0
+		// restore x0, x1 from stack
+		ldp x0, x1, [sp]
+		add sp, sp, #16
 
-    adr x0, entry
-    msr elr_el2, x0
+		eret
 
-    eret
+/** get pstate **/
+get_el:
+		mrs x0, CurrentEL
+		ret
+
+get_daif:
+		mrs x0, daif
+		ret
+
+get_nzcv:
+		mrs x0, nzcv
+		ret
+

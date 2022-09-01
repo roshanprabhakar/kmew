@@ -28,6 +28,7 @@ void show_invalid_entry_message(
   uint64_t exception_type,
   uint64_t exception_desc,
   uint64_t src_addr) {
+
   printf(
     "%s, ESR: %x, address: %x\r\n", 
     entry_error_messages[exception_type], 

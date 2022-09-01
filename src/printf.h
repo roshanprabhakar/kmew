@@ -113,5 +113,7 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
 }
 #endif
 
+void bprintn(uint64_t n);
+
 
 #endif  // _PRINTF_H_
