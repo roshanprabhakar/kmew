@@ -1,5 +1,5 @@
-#ifndef _BOOT_H_
-#define _BOOT_H_
+#ifndef _SPSR_CONFIG_
+#define _SPSR_CONFIG_
 
 #include <stdint.h>
 
@@ -7,8 +7,6 @@
 #define SPSR_DAIF 15 << 6 // 9-6
 #define SPSR_NZCV 15 << 28 // 31-28
 
-uint64_t get_el(void);
-uint64_t get_daif(void);
-uint64_t get_nzcv(void);
+uint32_t get_reset_spsr_el1(void);
 
-#endif // _BOOT_H_
+#endif // _SPSR_CONFIG_

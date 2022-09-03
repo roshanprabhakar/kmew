@@ -15,11 +15,9 @@ extern uint64_t __kernel_boundary_end;
 
 void kmew_main() {
 	init_el1_vector_table(); // done in el2
-	printf("5 current exception level: %ld\n", get_el() >> 2);
+	printf("1 current exception level: %ld\n", get_el() >> 2);
 	switch_to_el1(); 
-	int i = 5;
-	i += 5;
-	// printf("[%d] current exception level: %ld\n", i, get_el() >> 2);
+	printf("2 current exception level: %ld\n", get_el() >> 2);
 
 	/*
 	 Enable interrupts from system timer.
