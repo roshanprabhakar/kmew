@@ -14,7 +14,10 @@
 extern uint64_t __kernel_boundary_end;
 
 void kmew_main() {
-	init_el1_vector_table(); // done in el2
+
+	init_el1_vector_table();
+	init_el2_vector_table();
+
 	printf("1 current exception level: %ld\n", get_el() >> 2);
 	switch_to_el1(); 
 	printf("2 current exception level: %ld\n", get_el() >> 2);
