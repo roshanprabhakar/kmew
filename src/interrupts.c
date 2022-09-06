@@ -2,63 +2,59 @@
 #include "peripherals/arm_interrupts.h"
 #include "printf.h"
 
-const char *entry_error_messages[] = {
-  "SYNC_INVALID_ELnt",
-  "IRQ_INVALID_ELnt",		
-  "FIQ_INVALID_ELnt",		
-  "ERROR_INVALID_ELnT",		
+const char* exception_ids[] = {
+	"sync from cur el t",
+	"irq from cur el t",
+	"fiq from cur el t",
+	"serr from cur el t",
 
-  "SYNC_INVALID_ELnh",		
-  "IRQ_INVALID_ELnh",		
-  "FIQ_INVALID_ELnh",		
-  "ERROR_INVALID_ELnh",		
+	"sync from cur el h",
+	"irq from cur el h",
+	"fiq from cur el h",
+	"serr from cur el h",
 
-  "SYNC_INVALID_EL<n_64",		
-  "IRQ_INVALID_EL<n_64",		
-  "FIQ_INVALID_EL<n_64",		
-  "ERROR_INVALID_EL<n_64",	
+	"sync from lower el at 64",
+	"irq from lower el at 64",
+	"fiq from lower el at 64",
+	"serr from lower el at 64",
 
-  "SYNC_INVALID_EL<n_32",		
-  "IRQ_INVALID_EL<n_32",		
-  "FIQ_INVALID_EL<n_32",		
-  "ERROR_INVALID_EL<n_32"	
+	"sync from lower el at 32",
+	"irq from lower el at 32",
+	"fiq from lower el at 32",
+	"serr from lower el at 32"
 };
 
 void show_invalid_entry_message(
   uint64_t exception_type,
   uint64_t exception_desc,
-  uint64_t src_addr) {
+  uint64_t src_addr,
+	uint64_t el) {
 
   printf(
-    "%s, ESR: %x, address: %x\r\n", 
-    entry_error_messages[exception_type], 
+    "%s, ESR: %x, address: %x, el: %d\r\n", 
+    exception_ids[exception_type], 
     exception_desc, 
-    src_addr);
+    src_addr,
+		el);
 }
 
 void handle_irq(void) {
-	/*
-	uint32_t irq = *(uint32_t *)IRQ_PENDING_1;
-
-	switch (irq) {
-		case (SYSTEM_TIMER_IRQ_1):
-		  printf("timer interrupt received\n");
-			break;
-
-		default:
-			printf("Unknown pending irq: %x\r\n", irq);
-	}
-	*/
 	printf("irq received!\n");
 }
 
 
 void enable_timer_IRQ() {
-	*( uint32_t* ) ENABLE_BASIC_IRQ = 1; 
+	*(uint32_t*) ENABLE_BASIC_IRQ = 1;
+	*(uint32_t*) ENABLE_IRQ_1 = 1 << 1;
 }
 
 void inc_timer_cmp(uint32_t i) {
-	*( uint32_t* ) TIMER_C1 = *( uint32_t* ) TIMER_CLO + i;
+	*(uint32_t*) TIMER_C1 = *( uint32_t* ) TIMER_CLO + i;
+}
+
+void ack_timer_irq() {
+	*(uint32_t*) TIMER_CS = TIMER_CS_M1;
+	printf("timer interrupt received\n");
 }
 
 void block_until_timer_irq() {

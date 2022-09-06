@@ -3,8 +3,8 @@
  * Integral structures and types.
  */
 
-#ifndef _CLI
-#define _CLI
+#ifndef _CLI_H_
+#define _CLI_H_
 
 #include <stdint.h>
 
@@ -24,4 +24,4 @@ struct cli {
 
 void cli_start(struct cli*, char*);
 
-#endif /* _CLI */
+#endif // _CLI_H_

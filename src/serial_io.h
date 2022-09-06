@@ -2,8 +2,8 @@
  * IO communication with miniUART terminal emulator.
  */
 
-#ifndef __SERIAL_IO
-#define __SERIAL_IO
+#ifndef _SERIAL_IO_
+#define _SERIAL_IO_
 
 #include <stdint.h>
 
@@ -24,4 +24,4 @@ void getchar(char* c); // load *c with serial input
 /* Delay with simple loop (defined in boot.S) */
 void delay(uint64_t cycles);
 
-#endif /* __SERIAL_IO */
+#endif // _SERIAL_IO_
