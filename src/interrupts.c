@@ -1,5 +1,5 @@
 #include "interrupts.h"
-#include "peripherals/arm_interrupts.h"
+#include "peripherals/irq.h"
 #include "printf.h"
 
 const char* exception_ids[] = {
@@ -38,16 +38,25 @@ void show_invalid_entry_message(
 		el);
 }
 
-void handle_irq(void) {
-	printf("irq received!\n");
+void handle_irq() {
+	uint32_t irq_pending = *(uint32_t*) IRQ_PENDING_1;
+	if (irq_pending & SYS_TIMER_MATCH_1) {
+		*(uint32_t*) TIMER_CS = TIMER_CS_M1;
+		*(uint32_t*) TIMER_C1 = (*(uint32_t*) TIMER_CLO) + 200000;
+		printf("timer interrupt received!\n");
+	}
 }
 
 
 void enable_timer_IRQ() {
-	*(uint32_t*) ENABLE_BASIC_IRQ = 1;
 	*(uint32_t*) ENABLE_IRQ_1 = 1 << 1;
 }
 
+void inc_timer_cmp(uint32_t i) {
+	*(uint32_t*) TIMER_C1 = (*(uint32_t*) TIMER_CLO) + i;
+}
+
+/*
 void inc_timer_cmp(uint32_t i) {
 	*(uint32_t*) TIMER_C1 = *( uint32_t* ) TIMER_CLO + i;
 }
@@ -64,3 +73,4 @@ void block_until_timer_irq() {
 	}
 	printf("...received!\n");
 }
+*/

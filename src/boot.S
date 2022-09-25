@@ -15,9 +15,14 @@
 .global halt
 .global delay
 
+.global enable_irq
+.global disable_irq
+
 .global get_el
 .global get_daif
 .global get_nzcv
+
+.global set_sp
 
 // Entry point for the kernel. Registers:
 // x0 -> 32 bit pointer to DTB in memory (primary core only) / 0 (secondary cores)
@@ -46,7 +51,8 @@ bss_init_loop:
 
 kernel_entry:
 
-	bl pconfig_pre_el1
+	bl pconfig_pre_el1 // drop to el1
+	
 
 	// set sp_el1
 	ldr     x5, =start
@@ -83,7 +89,6 @@ pconfig_pre_el1:
 	lsr x0, x0, #2
 	cmp x0, 2
 	bne halt
-
 init_el2:
 	// sets el1 execution state to aarch64
 	ldr x0, =HCR_VALUE
@@ -94,13 +99,24 @@ init_el2:
 	bl init_el2_vector_table
 	
 	//
-	ldr x0, =SPSR_VALUE
+	ldr x0, =SPSR_VALUE_TO1
 	msr spsr_el2, x0
 
 	//
 	msr elr_el2, x1
 	eret
 
+enable_irq:
+	msr daifclr, #2
+	ret
+
+disable_irq:
+	msr daifset, #2
+	ret
+
+
+set_sp:
+	mov sp, x0
 
 /** get pstate **/
 get_el:

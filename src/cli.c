@@ -14,7 +14,7 @@ void case_enter(struct cli* c) {
 
 void case_delete(struct cli* c) {
   if (c->cur.x == 0) return;
-  delchar();
+  _delchar();
   c->cur.x--;
 }
 
@@ -26,14 +26,14 @@ void case_newchar(struct cli* c, char t) {
 }
 
 void cli_start(register struct cli* c, char* kernel_boundary) {
-  memset(c, 0, sizeof(c));
+  memset(c, 0, sizeof(*c));
   c->data_start = kernel_boundary;
 
-  putchar('$'); putchar(' ');
+  _putchar('$'); _putchar(' ');
 
   char t;
   for (;;) {
-    getchar(&t);
+    _getchar(&t);
     if (t == 13 /* ENTER */)	{ case_enter(c); }
     else if (t == (char) 127)	{ case_delete(c); }
     else                      { case_newchar(c, t); }

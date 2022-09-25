@@ -15,4 +15,9 @@
 #define DISABLE_IRQ_2				(IBASE+0x00000220)
 #define DISABLE_BASIC_IRQ		(IBASE+0x00000224)
 
+#define SYS_TIMER_MATCH_1 	(1 << 1)
+#define SYS_TIMER_MATCH_3 	(1 << 3)
+#define USB_CONTROLLER 			(1 << 9)
+#define AUX_INT 						(1 << 29)
+
 #endif // __ARM_INTERRUPTS

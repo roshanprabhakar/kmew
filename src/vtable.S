@@ -3,10 +3,6 @@
 .global init_el1_vector_table
 .global init_el2_vector_table
 
-.global enable_irq
-.global disable_irq
-.global vectors
-
 #define S_FRAME_SIZE 256
 .macro kernel_entry
 sub	sp, sp, #S_FRAME_SIZE
@@ -90,7 +86,7 @@ vtable_1:
 	kernel_exit
 .endm
 
-//////////////////////////////
+////////////////////////////// with SP0
 sync_t_from_el1:
 	exception_handler_el1 0
 irq_t_from_el1:
@@ -100,11 +96,11 @@ fiq_t_from_el1:
 serr_t_from_el1:
 	exception_handler_el1 3
 
-//////////////////////////////
+////////////////////////////// with SPX
 sync_h_from_el1:
 	exception_handler_el1 4
 irq_h_from_el1:
-	exception_handler_el1 5
+	bl handle_irq
 fiq_h_from_el1:
 	exception_handler_el1 6
 serr_h_from_el1:
@@ -217,12 +213,3 @@ init_el2_vector_table:
 	adr x0, vtable_2
 	msr vbar_el2, x0
 	ret
-
-enable_irq:
-  msr daifclr, #2
-  ret
-
-disable_irq:
-  msr daifset, #2
-  ret
-
