@@ -14,7 +14,4 @@ void _putchar(char c);
 void _delchar();
 void _getchar(char* c); // load *c with serial input
 
-/* Delay with simple loop (defined in boot.S) */
-void delay(uint64_t cycles);
-
 #endif // _SERIAL_IO_

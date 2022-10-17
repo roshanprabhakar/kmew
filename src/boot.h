@@ -12,5 +12,7 @@ void set_sp(uint64_t);
 void enable_irq();
 void disable_irq();
 
+/* Delay with simple loop */
+void delay(uint64_t cycles);
 
 #endif // _BOOT_H_

@@ -34,6 +34,7 @@
 #include <stdint.h>
 
 #include "printf.h"
+#include "serial_io.h"
 
 
 // define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
@@ -914,10 +915,10 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
 }
 
 // not part of initial library
-void bprintn(uint64_t n) {
-	for (int i = 63; i >= 0; i--) {
-		if ( n & (1 << i) ) printf("1");
-		else printf("0");
+void bprintn(uint8_t n) {
+	for (int i = sizeof(n) * 8; i >= 0; i--) {
+		if ( n & (1 << i) ) _putchar('1');
+		else _putchar('0');
 	}
 	printf("\n");
 }

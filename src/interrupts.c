@@ -38,39 +38,22 @@ void show_invalid_entry_message(
 		el);
 }
 
+void handle_timer_irq() {
+	*(uint32_t*) TIMER_CS = TIMER_CS_M1; // acknowledge asap, else handler gets repeatedly triggered
+	inc_timer_cmp(2000000);
+	printf("timer interrupt received!\n");
+}
+
+// in interrupt handlers, irq disabled by default
 void handle_irq() {
 	uint32_t irq_pending = *(uint32_t*) IRQ_PENDING_1;
 	if (irq_pending & SYS_TIMER_MATCH_1) {
-		*(uint32_t*) TIMER_CS = TIMER_CS_M1;
-		*(uint32_t*) TIMER_C1 = (*(uint32_t*) TIMER_CLO) + 200000;
-		printf("timer interrupt received!\n");
+		handle_timer_irq();
+	} else {
+		printf("different interrupt received\n");
 	}
 }
 
+void enable_timer_IRQ()	{ *(uint32_t*) ENABLE_IRQ_1 = SYS_TIMER_MATCH_1; }
+void inc_timer_cmp(uint32_t i) { *(uint32_t*) TIMER_C1 = (*(uint32_t*) TIMER_CLO) + i; }
 
-void enable_timer_IRQ() {
-	*(uint32_t*) ENABLE_IRQ_1 = 1 << 1;
-}
-
-void inc_timer_cmp(uint32_t i) {
-	*(uint32_t*) TIMER_C1 = (*(uint32_t*) TIMER_CLO) + i;
-}
-
-/*
-void inc_timer_cmp(uint32_t i) {
-	*(uint32_t*) TIMER_C1 = *( uint32_t* ) TIMER_CLO + i;
-}
-
-void ack_timer_irq() {
-	*(uint32_t*) TIMER_CS = TIMER_CS_M1;
-	printf("timer interrupt received\n");
-}
-
-void block_until_timer_irq() {
-	printf("waiting on timer interrupt...\n");
-	for (;;) {
-		if ((*(uint32_t*) IRQ_BASIC_PENDING) & 1) break;
-	}
-	printf("...received!\n");
-}
-*/

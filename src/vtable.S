@@ -83,7 +83,8 @@ vtable_1:
 	mrs x2, elr_el1
 	mov x3, #1
 	bl show_invalid_entry_message
-	kernel_exit
+	b halt
+	// kernel_exit
 .endm
 
 ////////////////////////////// with SP0
@@ -98,9 +99,10 @@ serr_t_from_el1:
 
 ////////////////////////////// with SPX
 sync_h_from_el1:
-	exception_handler_el1 4
+	mov x0, #4
+	b el1_sync
 irq_h_from_el1:
-	bl handle_irq
+	b el1_irq
 fiq_h_from_el1:
 	exception_handler_el1 6
 serr_h_from_el1:
@@ -125,6 +127,21 @@ fiq_from_aarch32_to_el1:
 	exception_handler_el1 14
 serr_from_aarch32_to_el1:
 	exception_handler_el1 15
+
+//////////////////////////////
+
+el1_sync: // calls to os
+	kernel_entry
+	mrs x1, esr_el1
+	mrs x2, elr_el1
+	mov x3, #1
+	bl show_invalid_entry_message
+	kernel_exit
+
+el1_irq:
+	kernel_entry
+	bl handle_irq
+	kernel_exit
 
 
 /****************************/
@@ -160,7 +177,8 @@ vtable_2:
 	mrs x2, elr_el2
 	mov x3, #2
 	bl show_invalid_entry_message
-	kernel_exit
+	b halt
+	// kernel_exit
 .endm
 
 //////////////////////////////
@@ -175,7 +193,8 @@ serr_t_from_el2:
 
 //////////////////////////////
 sync_h_from_el2:
-	exception_handler_el2 4
+	mov x0, #4
+	b el2_sync
 irq_h_from_el2:
 	exception_handler_el2 5
 fiq_h_from_el2:
@@ -185,7 +204,8 @@ serr_h_from_el2:
 
 //////////////////////////////
 sync_from_aarch64_to_el2:
-	exception_handler_el2 8
+	mov x0, #8
+	b el2_sync
 irq_from_aarch64_to_el2:
 	exception_handler_el2 9
 fiq_from_aarch64_to_el2:
@@ -204,6 +224,15 @@ serr_from_aarch32_to_el2:
 	exception_handler_el2 15
 
 //////////////////////////////
+
+el2_sync: // calls to hypervisor
+	kernel_entry
+	mrs x1, esr_el2
+	mrs x2, elr_el2
+	mov x3, #2
+	bl show_invalid_entry_message
+	kernel_exit
+
 init_el1_vector_table:
   adr x0, vtable_1
   msr vbar_el1, x0
