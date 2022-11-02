@@ -113,7 +113,11 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
 }
 #endif
 
-void bprintn(uint8_t n);
+#define bprintb(ptr, end) bprint(ptr, 1, end)
+#define bprinth(ptr, end) bprint(ptr, 2, end)
+#define bprintw(ptr, end) bprint(ptr, 4, end)
+#define bprintd(ptr, end) bprint(ptr, 8, end)
+void bprint(void*, uint8_t, uint8_t);
 
 
 #endif  // _PRINTF_H_

@@ -915,11 +915,16 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
 }
 
 // not part of initial library
-void bprintn(uint8_t n) {
-	for (int i = sizeof(n) * 8; i >= 0; i--) {
-		if ( n & (1 << i) ) _putchar('1');
+void bprint(void* n, uint8_t nbytes, uint8_t big_end) {
+	
+	int start, end, dir;
+	start = (big_end) ? 0 : nbytes * 8 - 1;
+	end = 	(big_end) ? nbytes * 8 : -1;
+	dir = 	(big_end) ? 1 : -1;
+
+	for (int i = start; i != end; i += dir) {
+		int shift = (big_end) ? (7 - i % 8) : i % 8;
+		if (((char*)n)[i / 8] & (1 << shift)) _putchar('1');
 		else _putchar('0');
 	}
-	printf("\n");
 }
-

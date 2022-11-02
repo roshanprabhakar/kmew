@@ -3,12 +3,6 @@
 #include "mm.h"
 #include "printf.h"
 
-void dump_mmap() {
-	for (int i = 0; i < NUM_PAGES / 8; i++) {
-		bprintn(((char*) mmap)[i]);
-	}
-}
-
 uint8_t is_free(int i) {
 	return !(((char* const) mmap)[i / 8] & (1 << (i % 8)));
 }
