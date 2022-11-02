@@ -5,10 +5,11 @@
 
 #define KiB 1024
 #define PAGE_SIZE 4 * KiB
-#define NUM_PAGES 80 // must be multiple of 8
+#define NUM_PAGES 64 // must be multiple of 8
 
 #define set_free(i) mm_query(i, 0)
 #define set_in_use(i) mm_query(i, 1)
+void mm_query(int, uint8_t);
 
 extern uint64_t low_memory_start; // after kernel data
 extern uint64_t mmap; // each byte marks a page in use or free

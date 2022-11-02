@@ -27,10 +27,26 @@ void kmew_main() {
   printf("current exception level: %ld\n", get_el() >> 2);
 
 	enable_irq();
-	uint16_t tmp = 7;
-	bprinth(&tmp, 0);
 
+	uint64_t kds = 0;
+	mmap = readable_boundary + kds;
+	uint32_t mmap_size = NUM_PAGES / 8;
+	memset((void*) mmap, 7, mmap_size);
+	kds += mmap_size;
+	
+	bprintd((void*) mmap);
+	_putchar('\n');
+	for (int i = NUM_PAGES - 1; i >= 0; i--) {
+		printf("%d", is_free(i));
+	}
 
+	set_free(NUM_PAGES - 1);
+	set_in_use(0);
+
+	_putchar('\n');
+	for (int i = NUM_PAGES - 1; i >= 0; i--) {
+		printf("%d", is_free(i));
+	}
 
 /*
 	// execution starts at el1

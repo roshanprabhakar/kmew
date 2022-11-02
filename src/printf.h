@@ -34,7 +34,9 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+
 #include "serial_io.h"
+#include "system.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -114,9 +116,16 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
 #endif
 
 #define bprintb(ptr, end) bprint(ptr, 1, end)
-#define bprinth(ptr, end) bprint(ptr, 2, end)
-#define bprintw(ptr, end) bprint(ptr, 4, end)
-#define bprintd(ptr, end) bprint(ptr, 8, end)
+
+#if defined(LITTLE_ENDIAN)
+#define bprinth(ptr) bprint(ptr, 2, 0)
+#define bprintw(ptr) bprint(ptr, 4, 0)
+#define bprintd(ptr) bprint(ptr, 8, 0)
+#elif defined(BIG_ENDIAN)
+#define bprinth(ptr) bprint(ptr, 2, 1)
+#define bprintw(ptr) bprint(ptr, 4, 1)
+#define bprintd(ptr) bprint(ptr, 8, 1)
+#endif
 void bprint(void*, uint8_t, uint8_t);
 
 
