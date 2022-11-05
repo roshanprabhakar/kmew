@@ -8,9 +8,12 @@
 #include <stdint.h>
 
 #define SHALLOW_SIZE(X) (sizeof(X) / sizeof(X[0]))
-#define ROUND_UP(X, Y) ((X + Y) / Y * Y) // round X to next multiple of Y
 
-void* memset(void* data, int c, uint32_t len);
-int32_t strcmp(char const* str1, char const* str2);
+void* memset(void*, int, uint32_t);
+int32_t strcmp(char const*, char const*);
+
+// only works for b a power of 2
+uint64_t round_down(uint64_t, uint64_t);
+uint64_t round_up(uint64_t, uint64_t);
 
 #endif // _SA_LIBC_

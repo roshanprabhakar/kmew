@@ -18,76 +18,45 @@ extern uint64_t __kernel_boundary_end;
 uint64_t readable_boundary = (uint64_t) &__kernel_boundary_end;
 
 uint64_t mmap;
-
-uint64_t low_memory_start;
+uint64_t start_assignable;
 
 void kmew_main() {
-  printf("current exception level: %ld\n", get_el() >> 2);
-  asm volatile("hvc #10");
-  printf("current exception level: %ld\n", get_el() >> 2);
 
-	enable_irq();
+	uint64_t kds = 0; // kernel data structures size
 
-	uint64_t kds = 0;
 	mmap = readable_boundary + kds;
 	uint32_t mmap_size = NUM_PAGES / 8;
-	memset((void*) mmap, 7, mmap_size);
+	memset((void*) mmap, 0, mmap_size);
+
 	kds += mmap_size;
-	
-	bprintd((void*) mmap);
+	start_assignable = round_up(readable_boundary + kds, PAGE_SIZE);
+
+	/*
+	bprint((void*) mmap, 8, 1); // dump bytes asc
 	_putchar('\n');
-	for (int i = NUM_PAGES - 1; i >= 0; i--) {
-		printf("%d", is_free(i));
+
+	for (int i = 0; i < NUM_PAGES; i++) {
+		printf("%d", IS_FREE(i));
 	}
-
-	set_free(NUM_PAGES - 1);
-	set_in_use(0);
-
 	_putchar('\n');
-	for (int i = NUM_PAGES - 1; i >= 0; i--) {
-		printf("%d", is_free(i));
-	}
+	*/
 
-/*
-	// execution starts at el1
-  printf("current exception level: %ld\n", get_el() >> 2);
-  asm volatile("hvc #10");
-  printf("current exception level: %ld\n", get_el() >> 2);
+	uint64_t p1 = malloc_page();
+	uint64_t p2 = malloc_page();
+	uint64_t p3 = malloc_page();
 
-	// enable async interrupts
-	enable_irq();
+	printf("start assign: %x\n", start_assignable);
+	printf("%x, %x, %x\n", p1, p2, p3);
+	printf("%d, %d\n", p2 - p1, p3 - p2);
+	printf("index 1 in use: %d\n", IS_FREE(1));
+	free(p2);
+	printf("index 1 in use: %d\n", IS_FREE(1));
+	uint64_t p4 = malloc_page();
+	printf("same loc: %d\n", p2 == p4);
 
-	// tracks length of all maintained kernel structures
-	uint64_t kds = 0; // kernel data size
-	
 
-	// initialize memory page allocator
-	mmap = readable_boundary + kds;
-	uint32_t mmap_size = NUM_PAGES / 8;
-	memset((void*) readable_boundary + kds, 0, mmap_size);
-	kds += mmap_size;
-	
-	// initialize process table
-	ptable = (struct process*) (readable_boundary + kds);	
-	cur_proc = 0;
-	uint32_t ptable_size = sizeof(struct process) * PROCESS_CAP;
-	for (int i = 0; i < PROCESS_CAP; i++) {
-		ptable[i].in_use = 0;
-	}
-	kds += ptable_size;
-
-	low_memory_start = ROUND_UP(mmap + kds, PAGE_SIZE);
-*/	
-#if 0
-	// trigger timer interrupts
-	inc_timer_cmp(200000);
-	enable_timer_IRQ();
-#endif
-
-#if 0
-  struct cli command_line; // first instance cannibalizes serial io
-  cli_start(&command_line, (char *)&__kernel_boundary_end); 	// initialize session
-#endif
+	// bprint((void*) mmap, 8, 1);
+	// _putchar('\n');
 
 	asm volatile("bl halt"); // return address is corrupted, halt here
   return;

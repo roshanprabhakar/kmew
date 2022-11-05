@@ -1,25 +1,14 @@
-#include <stdint.h>
-
 #include "mm.h"
 #include "printf.h"
 
-uint8_t is_free(int i) {
-	return !(((char* const) mmap)[i / 8] & (1 << (i % 8)));
+uint64_t malloc_page() {
+	int i = 0;
+	for (; !IS_FREE(i) && i < NUM_PAGES; i++) {}
+	if (i == NUM_PAGES) return 0x0L;
+	SET_USE(i);
+	return IND_TO_PTR(i);
 }
 
-void mm_query(int i, uint8_t m) {
-	char* cur = ((char* const) mmap) + i / 8;
-	*cur = m ? 
-		*cur | (1 << (i % 8)) 							: // set in use
-		*cur & ((~(char)0) ^ (1 << (i % 8))); // set free
-}
-
-void* malloc_page() {
-	for (int i = 0; i < NUM_PAGES; i++) {
-		if (is_free(i)) {
-			set_in_use(i);
-			return (void*) (low_memory_start + PAGE_SIZE * i);
-		}
-	}
-	return (void*) 0;
+void free_page(uint64_t ptr) {
+	SET_FREE(PTR_TO_IND(ptr));
 }

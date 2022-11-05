@@ -115,13 +115,13 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
 }
 #endif
 
-#define bprintb(ptr, end) bprint(ptr, 1, end)
-
 #if defined(LITTLE_ENDIAN)
+#define bprintb(ptr) bprint(ptr, 1, 0)
 #define bprinth(ptr) bprint(ptr, 2, 0)
 #define bprintw(ptr) bprint(ptr, 4, 0)
 #define bprintd(ptr) bprint(ptr, 8, 0)
 #elif defined(BIG_ENDIAN)
+#define bprintb(ptr) bprint(ptr, 1, 1) 
 #define bprinth(ptr) bprint(ptr, 2, 1)
 #define bprintw(ptr) bprint(ptr, 4, 1)
 #define bprintd(ptr) bprint(ptr, 8, 1)
